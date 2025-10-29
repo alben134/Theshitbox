@@ -1,0 +1,7 @@
+% Abraham, Jones, 1236002380
+
+a = input('please enter a number between 100 and 200: ');
+
+for x = 1:200
+    if x % 3 == 0 || x % 7 == 0
+        
