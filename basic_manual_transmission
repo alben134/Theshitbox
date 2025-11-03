@@ -1,0 +1,65 @@
+function basic_manual_transmission()
+
+
+gearSpeeds = [0, 33, 66, 100];
+maxGear = nume1(gearSpeeds)-1;
+accelRate = 2;
+rpmPerSpeed = 250;
+idleRPM = 900;
+
+gear = 1;
+speed = 0;
+
+running = true;
+fig = figure; 
+
+fig = figure('Name', 'Basic Manual Transmission', 'NumberTitle','off', 'MenuBar','none','ToolBar','none',
+         'color',[0.95 0.95 0.95],
+         'KeyPressFcn', @keyDown,
+         'CloseRequestFcn', (@closeFig);
+
+         hud = uicontrol('Style','text','Units','normalized', ...
+        'Position',[0.1 0.2 0.8 0.6], ...
+        'FontSize',18,'BackgroundColor',[0.95 0.95 0.95], ...
+        'HorizontalAlignment','left');
+         
+         dt = 0.05;
+         
+         while running && ishandle(fig) 
+             targetSpeed = gearspeed(gear + 1);
+             if abs(speed - targetSpeed) > 0.1
+                 direction = sign(targetSpeed - speed);
+                 speed = speed + direction + accelRate * dt;
+             end
+         end
+         
+         rpm = idleRPM + speed * rpmPerSpeed;
+
+          set(hud, 'String', sprintf([ ...
+            'Press SPACE to shift up\n' ...
+            'Press R to reset\n\n' ...
+            'Gear: %d\nSpeed: %.1f m/s\nRPM: %.0f'], ...
+            gear, speed, rpm));
+
+         pause(dt);
+
+         function keyDown(~, event)
+        switch event.Key
+            case 'space'  % shift up
+                if gear < maxGear
+                    gear = gear + 1;
+                else
+                    gear = 0; % back to neutral
+                    speed = 0;
+            end 
+         
+               case 'alt'  % Shift down
+            if  gear > 0
+                gear = gear - 1;
+            end
+               case {'r','R'}  % Reset
+                gear = 0;
+                speed = 0;
+           
+        end
+    end
